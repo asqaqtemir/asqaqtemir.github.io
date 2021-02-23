@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=">
+  <title>Hello</title>
+</head>
+<body>
+  
+  <div><textarea input type="text" id="trText" value=""></textarea></div>
+  
+<div><textarea id="result"></textarea></div>
+ 
+ <input onclick="myFunction()" type="button" value="Көшіру">
+
+
+  <script>
+    
+    let el = document.querySelector("#trText");
+    let res = document.querySelector("#result");
+    
+    el.addEventListener('keyup', e => {
+      res.textContent = transliter(e.target.value)
+    })
+    
+function myFunction() {
+  /* Get the text field */
+  var copyText = document.getElementById("#result");
+
+  /* Select the text field */
+  
+result.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Copied the text: " + result.value);
+}
+
+
+  </script>
+</body>
+</html>
