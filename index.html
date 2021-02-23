@@ -14,7 +14,8 @@
  <input onclick="myFunction()" type="button" value="Көшіру">
 
 
-  <script>
+  <script type="text/javascript"
+>
     
     let el = document.querySelector("#trText");
     let res = document.querySelector("#result");
@@ -34,8 +35,8 @@ result.select();
   /* Copy the text inside the text field */
   document.execCommand("copy");
 
-  /* Alert the copied text */
-  alert("Copied the text: " + result.value);
+  /* Alert the copied text *
+  alert("Copied the text: "+ result.value);
 }
 
 
