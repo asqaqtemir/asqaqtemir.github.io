@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=">
+  <title>Tote-Mote</title>
+</head>
+<body>
+  
+  <div><textarea 
+
+
+style="width:300px;height:150px;
+ margin-top:50px; margin-left:50px;border-color:black; padding:100;
+
+
+" input type="text" id="trText" value=""></textarea></div>
+  
+<div><textarea style="width:300px; border-color: black; height:150px; margin-top:10px; margin-left:50px;"id="result"></textarea></div>
+ 
+ <input 
+style="width:100px;height:50px;
+ margin-top:10px; margin-left:50px;border:50; padding:100;"
+
+
+onclick="myFunction()" type="button" value="Көшіру">
+
+
+  <script>
+  
+ function transliter( str ) {
+    
+    const ru = {
+    "А": "A",
+    "Ә": "Ä",
+    "Б": "B",
+    "Д": "D",
+    "Е": "E",
+    "Ф": "F",
+    "Г": "G",
+    "Ғ": "G",
+    "Һ": "H",
+    "Х": "H",
+    "І": "İ",
+    "И": "İy",
+    "Й": "Ү",
+    "Ж": "J",
+    "К": "K",
+    "Л": "L",
+    "М": "M",
+    "Н": "N",
+    "Ң": "Ń",
+    "О": "O",
+    "Ө": "Ö",
+    "П": "P",
+    "Қ": "K",
+    "Р": "R",
+    "С": "S",
+    "Ш": "C",
+    "Ч": "C",
+    "Т": "T",
+    "Ұ": "U",
+    "Ү": "Ü",
+    "В": "V",
+    "Ы": "I",
+    "У": "W",
+    "З": "Z",
+    "а": "a",
+    "ә": "ä",
+    "б": "b",
+    "д": "d",
+    "е": "e",
+    "ф": "f",
+    "г": "g",
+    "ғ": "g",
+    "һ": "h",
+    "х": "h",
+    "і": "i",
+    "и": "iy",
+    "й": "y",
+    "ж": "j",
+    "к": "k",
+    "л": "l",
+    "м": "m",
+    "н": "n",
+    "ң": "ń",
+    "о": "o",
+    "ө": "ö",
+    "п": "p",
+    "қ": "k",
+    "р": "r",
+    "с": "s",
+    "ш": "c",
+    "ч": "c",
+    "т": "t",
+    "ұ": "u",
+    "ү": "ü",
+    "в": "v",
+    "ы": "ı",
+    "у": "w",
+    "з": "z",
+    "Я": "Ya",
+    "я":"ya",
+    "Ю": "Iw",
+    "ю":"ıw",
+    "Э":"E",
+    "э":"e",
+    "Щ":"C",
+    "щ":"c",
+    "Ч":"C",
+    "ч":"с",
+    "Ц":"S",
+    "ц":"s",
+    "Ь":"",
+    "ь":"",
+    "Ъ":"",
+    "ъ":""
+  }, n_str = [];
+    
+    str = str.replace(/[ъЪЬь]+/, '');
+    str = str.replace(/[Ққ]+[Ии]+[Яя]/g, 'kıya');
+    str = str.replace(/[Кк]+[Ии]+[Яя]/g, 'kiya');
+    str = str.replace(/[Жж]+[Ии]+[Яя]/g, 'jıya');
+    
+    str = str.replace(/[Ии]+[Ыы]/g, 'ıyı');
+    str = str.replace(/[Ии]+[Іі]/g, 'iyi');
+    str = str.replace(/[Ғғ]+[Ии]/g, 'gıy');
+    str = str.replace(/[Ққ]+[Ии]/g, 'kıy');
+    
+    str = str.replace(/[Жж]+[Ии]/g, 'jıy');
+    str = str.replace(/[Ғғ]+[Ии]/g, 'gıy');
+    str = str.replace(/[Ии]+[Юю]/g, 'iyiw');
+    str = str.replace(/[Аа]+[Юю]/g, 'ayıw');
+    str = str.replace(/[Оо]+[Юю]/g, 'oyıw');
+    str = str.replace(/[Ыы]+[Юю]/g, 'ıyıw');
+    str = str.replace(/[Іі]+[Юю]/g, 'iyiw');
+    str = str.replace(/[Ее]+[Юю]/g, 'eyiw');
+    str = str.replace(/[Ұұ]+[Юю]/g, 'uyıw');
+    str = str.replace(/[Үү]+[Юю]/g, 'üyiw');
+    
+    str = str.replace(/[Ии]+[Яя]/g, 'ıya');
+    str = str.replace(/[Ии]+[Яя]/g, 'ıya');
+    
+    
+    
+    str = str.replace(/[Бб]+[Уу]+[Уу]/g, 'buwıw');
+str = str.replace(/[Вв]+[Уу]+[Уу]/g, 'vuwıw');
+str = str.replace(/[Гг]+[Уу]+[Уу]/g, 'güwiw');
+str = str.replace(/[Ғғ]+[Уу]+[Уу]/g, 'guwıw');
+str = str.replace(/[Дд]+[Уу]+[Уу]/g, 'duwıw');
+str = str.replace(/[Жж]+[Уу]+[Уу]/g, 'juwıw');
+str = str.replace(/[Зз]+[Уу]+[Уу]/g, 'zuwıw');
+str = str.replace(/[Йй]+[Уу]+[Уу]/g, 'iyiw');
+str = str.replace(/[Ии]+[Уу]+[Уу]/g, 'iyiw');
+str = str.replace(/[Кк]+[Уу]+[Уу]/g, 'küwiw');
+str = str.replace(/[Ққ]+[Уу]+[Уу]/g, 'kuwıw');
+str = str.replace(/[Лл]+[Уу]+[Уу]/g, 'luwıw');
+str = str.replace(/[Мм]+[Уу]+[Уу]/g, 'muwıw');
+str = str.replace(/[Нн]+[Уу]+[Уу]/g, 'nuwıw');
+str = str.replace(/[Ңң]+[Уу]+[Уу]/g, 'ŋuwıw');
+str = str.replace(/[Пп]+[Уу]+[Уу]/g, 'puwıw');
+str = str.replace(/[Рр]+[Уу]+[Уу]/g, 'ruwıw');
+str = str.replace(/[Сс]+[Уу]+[Уу]/g, 'suwıw');
+str = str.replace(/[Тт]+[Уу]+[Уу]/g, 'tuwıw');
+str = str.replace(/[Уу]+[Уу]+[Уу]/g, 'uwıw');
+str = str.replace(/[Фф]+[Уу]+[Уу]/g, 'fuwıw');
+str = str.replace(/[Хх]+[Уу]+[Уу]/g, 'huwıw');
+str = str.replace(/[Һһ]+[Уу]+[Уу]/g, 'huwıw');
+str = str.replace(/[Цц]+[Уу]+[Уу]/g, 'suwıw');
+str = str.replace(/[Чч]+[Уу]+[Уу]/g, 'cuwıw');
+str = str.replace(/[Шш]+[Уу]+[Уу]/g, 'сuwıw');
+str = str.replace(/[Щщ]+[Уу]+[Уу]/g, 'cuwıw');
+    
+    
+    
+  
+    str = str.replace(/[Бб]+[Уу]/g, 'buw');
+str = str.replace(/[Вв]+[Уу]/g, 'vuw');
+str = str.replace(/[Гг]+[Уу]/g, 'güw');
+str = str.replace(/[Ғғ]+[Уу]/g, 'guw');
+str = str.replace(/[Дд]+[Уу]/g, 'duw');
+str = str.replace(/[Жж]+[Уу]/g, 'juw');
+str = str.replace(/[Зз]+[Уу]/g, 'zuw');
+str = str.replace(/[Йй]+[Уу]/g, 'iyiw');
+str = str.replace(/[Ии]+[Уу]/g, 'iyiw');
+str = str.replace(/[Кк]+[Уу]/g, 'küw');
+str = str.replace(/[Ққ]+[Уу]/g, 'kuw');
+str = str.replace(/[Лл]+[Уу]/g, 'luw');
+str = str.replace(/[Мм]+[Уу]/g, 'muw');
+str = str.replace(/[Нн]+[Уу]/g, 'nuw');
+str = str.replace(/[Ңң]+[Уу]/g, 'ŋuw');
+str = str.replace(/[Пп]+[Уу]/g, 'puw');
+str = str.replace(/[Рр]+[Уу]/g, 'ruw');
+str = str.replace(/[Сс]+[Уу]/g, 'suw');
+str = str.replace(/[Тт]+[Уу]/g, 'tuw');
+str = str.replace(/[Уу]+[Уу]/g, 'uwıw');
+str = str.replace(/[Фф]+[Уу]/g, 'fuw');
+str = str.replace(/[Хх]+[Уу]/g, 'huw');
+str = str.replace(/[Һһ]+[Уу]/g, 'huw');
+str = str.replace(/[Цц]+[Уу]/g, 'suw');
+str = str.replace(/[Чч]+[Уу]/g, 'cuw');
+str = str.replace(/[Шш]+[Уу]/g, 'сuw');
+str = str.replace(/[Щщ]+[Уу]/g, 'cuw');
+
+
+
+
+    
+    
+    
+    
+    
+    
+
+    for ( var i = 0; i < str.length; ++i ) {
+       n_str.push(
+              ru[ str[i] ]
+           || ru[ str[i].toLowerCase() ] == undefined && str[i]
+           || ru[ str[i].toLowerCase() ].replace(/^(.)/, function ( match ) { return match.toUpperCase() })
+       );
+    }
+    
+    return n_str.join('');
+}
+
+
+
+  
+    
+    let el = document.querySelector("#trText");
+    let res = document.querySelector("#result");
+    
+    el.addEventListener('keyup', e => {
+      res.textContent = transliter(e.target.value)
+    })
+    
+function myFunction() {
+  /* Get the text field */
+  var copyText = document.getElementById("#result");
+
+  /* Select the text field */
+  
+result.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Мәтін көшірілді: " + result.value);
+}
+
+
+  </script>
+</body>
+</html>
