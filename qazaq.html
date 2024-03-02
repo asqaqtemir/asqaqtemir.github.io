@@ -41,6 +41,27 @@
   <textarea id="latinText" readonly></textarea>
 
   <script>
+    // Функция загрузки дополнительных слов из файла
+    function loadAdditionalWords(filename) {
+      const fs = require('fs');
+      const path = require('path');
+
+      try {
+          const data = fs.readFileSync(path.join(__dirname, filename), 'utf8');
+          const words = data.trim().split('\n').map(line => {
+              const [kazakh, latin] = line.split(':');
+              return { kazakh, latin };
+          });
+          return words;
+      } catch (err) {
+          console.error('Error reading additional words file:', err);
+          return [];
+      }
+    }
+
+    // Загрузить дополнительные слова из файла
+    const additionalWords = loadAdditionalWords('additional_words.txt');
+
     const ALPHABET = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T','U','V','W','Y','Z','Ä','İ','Ñ','Ö','Ü'];
     const VOWEL = ['A', 'Ä', 'Ö', 'O', 'Ü', 'U', 'E', 'I', 'İ'];
     const SOFT = ['Ä', 'Ö', 'Ü', 'İ', 'E'];
@@ -52,7 +73,7 @@
 
     function transliterate() {
       const kazakhText = document.getElementById('kazakhText').value;
-      const latinText = converter(kazakhText, kazgrammerAlphabet);
+      const latinText = converter(kazakhText, qazaqGrammarAlphabet);
       document.getElementById('latinText').value = latinText;
     }
 
@@ -90,11 +111,10 @@
       }
     }
 
-
-	// Пример использования
-	const kazgrammerAlphabet = {
-  "name":"kazgrammer",
-  "characters": {
+    // Объект алфавита казахского языка с дополнительными словами из файла
+    const qazaqGrammarAlphabet = {
+      "name": "qazaqGrammar",
+       "characters": {
 	"А": "A",
 	"Ә": "Ä",
 	"Б": "B",
@@ -105,8 +125,8 @@
 	"Ғ": "Ğ",
 	"Һ": "H",
 	"Х": "H",
-	"І": "I",
-	"И": "Iy",
+	"І": "İ",
+	"И": "İy",
 	"Й": "Ү",
 	"Ж": "J",
 	"К": "K",
@@ -203,15 +223,31 @@
       "([ұ]+[ю])":"uyıw",
       "([ү]+[ю])":"üyiw",
 
+
      "([қ]+[а]+[й]+[т]+[у]+[ы])":"qaytıwı",
       "([қ]+[а]+[й]+[т]+[у]+[і])":"qaytiwi",
 
    
       "([а]+[щ]+[ы])":"accı",
        "([т]+[ұ]+[щ]+[ы])":"tuccı",
+       "«":"“",
+       "»":"”",
+      //'компьютер':'kompiter',
+     
+     
+       //'компьютер':'kompiter'
+      'модель':'mödel',
+      'моль':'möl',
+     
+       
   }
 };
-	
+
+    // Добавить дополнительные слова из файла в объект алфавита
+    additionalWords.forEach(word => {
+      qazaqGrammarAlphabet.characters[word.kazakh] = word.latin;
+    });
   </script>
+
 </body>
 </html>
