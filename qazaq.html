@@ -33,7 +33,7 @@
   <label for="kazakhText">Qazaqca söz jaz:</label>
   <textarea id="kazakhText"></textarea>
 
-  <button onclick="transliterate()">Säykestew</button>
+  <button onclick="loadAdditionalWords('additional_words.txt')">Säykestew</button>
   <button onclick="deleteText()">Öciriw</button>
   <button onclick="copyText()">Köciriw</button>
 
@@ -41,70 +41,61 @@
   <textarea id="latinText" readonly></textarea>
 
   <script>
-    // Функция загрузки дополнительных слов из файла
-    function loadAdditionalWords(filename, callback) {
+    function loadAdditionalWords(filename) {
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
-          callback(xhr.responseText);
-        }
-      };
-      xhr.open("GET", filename, true);
-      xhr.send();
-    }
+          const data = xhr.responseText;
+          const words = data.trim().split('\n').map(line => {
+              const [kazakh, latin] = line.split(':');
+              return { kazakh, latin };
+          });
+          const additionalWords = words;
 
-    // Загрузить дополнительные слова из файла
-    loadAdditionalWords('additional_words.txt', function(data) {
-      const words = data.trim().split('\n').map(line => {
-          const [kazakh, latin] = line.split(':');
-          return { kazakh, latin };
-      });
+          // Определение функций транслитерации и работы с текстом
+          function transliterate() {
+            const kazakhText = document.getElementById('kazakhText').value;
+            const latinText = converter(kazakhText, qazaqGrammarAlphabet);
+            document.getElementById('latinText').value = latinText;
+          }
 
-      const additionalWords = words;
+          function deleteText() {
+            document.getElementById('kazakhText').value = '';
+            document.getElementById('latinText').value = '';
+          }
 
-      // Определение функций транслитерации и работы с текстом
-      function transliterate() {
-        const kazakhText = document.getElementById('kazakhText').value;
-        const latinText = converter(kazakhText, qazaqGrammarAlphabet);
-        document.getElementById('latinText').value = latinText;
-      }
+          function copyText() {
+            const latinText = document.getElementById('latinText');
+            latinText.select();
+            document.execCommand('copy');
+          }
 
-      function deleteText() {
-        document.getElementById('kazakhText').value = '';
-        document.getElementById('latinText').value = '';
-      }
+          function converter(str, alphabet) {
+            const { characters, exceptions = [] } = alphabet;
+            if (typeof str === 'string') {
 
-      function copyText() {
-        const latinText = document.getElementById('latinText');
-        latinText.select();
-        document.execCommand('copy');
-      }
+              let latin = str;
 
-      function converter(str, alphabet) {
-        const { characters, exceptions = [] } = alphabet;
-        if (typeof str === 'string') {
+              latin = latin.replace(/\S+/ig, word => {
+                let w = word;
+                const keys = Object.keys(exceptions);
+                for (let i = 0, ii = keys.length; i < ii; i++) {
+                  w = w.replace(new RegExp(keys[i], 'ig'), exceptions[keys[i]]);
+                }
+                return w;
+              });
 
-          let latin = str;
+              latin = latin.replace(/[А-Яа-яӘәІіҢңҒғҮүҰұҚқӨөҺһ]/gi, (l) => {
+                return characters[l] ? characters[l] : l;
+              });
 
-          latin = latin.replace(/\S+/ig, word => {
-            let w = word;
-            const keys = Object.keys(exceptions);
-            for (let i = 0, ii = keys.length; i < ii; i++) {
-              w = w.replace(new RegExp(keys[i], 'ig'), exceptions[keys[i]]);
+              return latin;
             }
-            return w;
-          });
+          }
 
-          latin = latin.replace(/[А-Яа-яӘәІіҢңҒғҮүҰұҚқӨөҺһ]/gi, (l) => {
-            return characters[l] ? characters[l] : l;
-          });
-
-          return latin;
-        }
-      }
-
-      // Объект алфавита казахского языка с дополнительными словами из файла
-      const qazaqGrammarAlphabet = {
+          // Объект алфавита казахского языка с дополнительными словами из файла
+          const qazaqGrammarAlphabet = {
+             const qazaqGrammarAlphabet = {
         "name": "qazaqGrammar",
          "characters": {
         "А": "A",
@@ -234,11 +225,19 @@
        
   }
 };
-      // Добавить дополнительные слова из файла в объект алфавита
-      additionalWords.forEach(word => {
-        qazaqGrammarAlphabet.characters[word.kazakh] = word.latin;
-      });
-    });
+
+          // Добавить дополнительные слова из файла в объект алфавита
+          additionalWords.forEach(word => {
+            qazaqGrammarAlphabet.characters[word.kazakh] = word.latin;
+          });
+
+          // вызов функции транслитерации после загрузки дополнительных слов
+          transliterate();
+        }
+      };
+      xhr.open("GET", filename, true);
+      xhr.send();
+    }
   </script>
 
 </body>
