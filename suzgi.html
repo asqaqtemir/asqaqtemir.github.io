@@ -160,17 +160,16 @@ for (let i = 0; i < lowerCaseWord.length - 2; i++) {
     }
 }
 
-// Проверяем, что указанные буквы не повторяются подряд
-const forbiddenRepeats = ['б', 'в', 'г', 'ғ', 'ж', 'з', 'р', 'л', 'й', 'ң', 'ф', 'х', 'ц', 'ч', 'һ'];
+// Проверяем, что одна и та же буква не повторяется подряд
+const forbiddenRepeats = ['б', 'в', 'г', 'ғ', 'ж', 'з', 'д', 'р', 'л', 'й', 'м', 'н', 'ң', 'ф', 'х', 'ц', 'ч', 'һ'];
 for (let i = 0; i < lowerCaseWord.length - 1; i++) {
     const currentChar = lowerCaseWord[i];
     const nextChar = lowerCaseWord[i + 1];
-    if (forbiddenRepeats.includes(currentChar) && forbiddenRepeats.includes(nextChar)) {
-        failedFilters.push('Қатар қайталанбайтын дауыссыздар бар.'); // Слово не прошло фильтр
+    if (forbiddenRepeats.includes(currentChar) && currentChar === nextChar) {
+        failedFilters.push('Қатар қайталанбайтын дауыссыздар бар'); // Слово не прошло фильтр
         break;
     }
 }
-
 
             // Возвращаем массив названий фильтров, которые не прошло слово
             return [word, failedFilters];
