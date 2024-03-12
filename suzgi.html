@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Қазақша сөздер сүзгісі</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .failed-filters {
+            margin-top: 10px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Қазақша сөздер сүзгісі</h1>
+        <div class="form-group">
+            <label for="word">Сөз енгіз:</label>
+            <input type="text" id="word" name="word" required>
+        </div>
+        <button onclick="checkWord()">Тексеру</button>
+        <p id="result"></p>
+        <p class="failed-filters" id="failed-filters"></p>
+    </div>
+
+    <script>
+        function passFilters(word) {
+            // Список дополнительных букв
+            const additionalLetters = 'цфэьъчвё';
+            // Регулярное выражение для поиска четырех согласных букв подряд
+            const consecutiveConsonantsRegex = /[бвгджзйклмнпрстфхцчшщ]{4}/i;
+            // Список букв, на которые должно заканчиваться слово
+            const specificLetters = ['г', 'д', 'б'];
+            // Сочетания букв, которые не должны встречаться в слове
+            const forbiddenCombinations = ['кл', 'нл', 'гл', 'шл', 'зл', 'пл', 'лл', 'дл', 'жл', 'сл', 'мл', 'тл', 'бл', 'го', 'га', 'ог', 'аг', 'ко', 'ка', 'ок', 'ак', 'ык', 'кы', 'гы', 'ыг'];
+
+            // Массив для хранения названий фильтров, которые не прошло слово
+            let failedFilters = [];
+
+            // Преобразуем входное слово в нижний регистр для удобства сравнения
+            const lowerCaseWord = word.toLowerCase();
+
+            // Проверяем, содержит ли слово хотя бы одну дополнительную букву
+            for (let i = 0; i < lowerCaseWord.length; i++) {
+                const letter = lowerCaseWord[i];
+                if (additionalLetters.includes(letter)) {
+                    failedFilters.push('Қосымша әріптер'); // Слово не прошло фильтр
+                    break;
+                }
+            }
+
+            // Проверяем, содержит ли слово четыре согласные буквы подряд
+            if (consecutiveConsonantsRegex.test(word)) {
+                failedFilters.push('Төрт дауыссыз қатар тұр'); // Слово не прошло фильтр
+            }
+
+            // Проверяем, заканчивается ли слово на одну из определенных букв
+            const lastLetter = lowerCaseWord[lowerCaseWord.length - 1];
+            if (specificLetters.includes(lastLetter)) {
+                failedFilters.push('Белгілі бір әріптермен аяқталып тұр'); // Слово не прошло фильтр
+            }
+
+            // Проверяем, содержит ли слово две согласные буквы подряд в начале слова
+            const firstTwoLetters = lowerCaseWord.slice(0, 2);
+            if (/[бвгджзйклмнпрстфхцчшщ]{2}/i.test(firstTwoLetters)) {
+                failedFilters.push('Екі дауыссыз әріп сөздің басында тұр'); // Слово не прошло фильтр
+            }
+// Проверяем, что буква "о" не находится начиная с третьей позиции и далее
+for (let i = 2; i < lowerCaseWord.length; i++) {
+    if (lowerCaseWord[i] === 'о') {
+        failedFilters.push('"О" әрпі қате жерде тұр'); // Слово не прошло фильтр
+        break;
+    }
+}
+
+
+
+
+            // Проверяем, содержит ли слово две гласные буквы подряд
+            if (/[аеиоуыэюя]{2}/i.test(word)) {
+                failedFilters.push('Екі дауысты әріп қатар тұр'); // Слово не прошло фильтр
+            }
+
+            // Проверяем, содержатся ли запрещенные сочетания букв в слове
+            for (let i = 0; i < forbiddenCombinations.length; i++) {
+                if (lowerCaseWord.includes(forbiddenCombinations[i])) {
+                    failedFilters.push('Сәйкес келмейтін әріптер қатар тұр'); // Слово не прошло фильтр
+                    break;
+                }
+            }
+
+            // Возвращаем массив названий фильтров, которые не прошло слово
+            return [word, failedFilters];
+        }
+
+        function checkWord() {
+            const wordInput = document.getElementById('word');
+            const resultElement = document.getElementById('result');
+            const failedFiltersElement = document.getElementById('failed-filters');
+
+            const word = wordInput.value.trim();
+
+            if (word === '') {
+                resultElement.textContent = 'Сөз енгізіңіз.';
+                failedFiltersElement.textContent = '';
+                return;
+            }
+
+           const [modifiedWord, failedFilters] = passFilters(word);
+        if (failedFilters.length === 0) {
+            resultElement.textContent = 'Сөз сүзгіден өтті: ' + modifiedWord; // Выводим введенное слово
+            failedFiltersElement.textContent = '';
+        } else {
+            resultElement.textContent = 'Сөз кей сүзгіден өтпеді: ' + modifiedWord;
+            failedFiltersElement.textContent = 'Өтпеген сүзгілер: ' + failedFilters.join(', ');
+        }
+        }
+    </script>
+</body>
+</html>
