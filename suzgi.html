@@ -71,7 +71,7 @@
     <div class="container">
         <h1>Қазақша сөздер сүзгісі</h1>
         <div class="form-group">
-            <label for="word">Сөз енгіз:</label>
+            <label for="word">Бір сөз енгіз:</label>
             <input type="text" id="word" name="word" required>
         </div>
         <button onclick="checkWord()">Тексеру</button>
@@ -170,11 +170,23 @@ for (let i = 0; i < lowerCaseWord.length - 1; i++) {
         break;
     }
 }
+// Проверяем, что буква не находится начиная с третьей позиции и далее
+for (let i = 2; i < lowerCaseWord.length; i++) {
+    if (lowerCaseWord[i] === 'о' || lowerCaseWord[i] === 'ұ' || lowerCaseWord[i] === 'ү' || lowerCaseWord[i] === 'ә' || lowerCaseWord[i] === 'ө') {
+        failedFilters.push('о,ұ,ү,ә,ө әрпі қате жерде тұр'); // Слово не прошло фильтр
+        break;
+    }
+}
+
 
             // Возвращаем массив названий фильтров, которые не прошло слово
             return [word, failedFilters];
         }
 
+
+
+
+        
         function checkWord() {
             const wordInput = document.getElementById('word');
             const resultElement = document.getElementById('result');
@@ -183,7 +195,7 @@ for (let i = 0; i < lowerCaseWord.length - 1; i++) {
             const word = wordInput.value.trim();
 
             if (word === '') {
-                resultElement.textContent = 'Сөз енгізіңіз.';
+                resultElement.textContent = 'Бір сөз енгізіңіз.';
                 failedFiltersElement.textContent = '';
                 return;
             }
