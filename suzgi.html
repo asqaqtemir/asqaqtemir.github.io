@@ -145,6 +145,18 @@ for (let i = 2; i < lowerCaseWord.length; i++) {
                 }
             }
 
+            // Проверяем, что после каждых трех согласных идет гласная
+for (let i = 0; i < lowerCaseWord.length - 2; i++) {
+    if (/[бвгджзйклмнпрстфхцчшщ]{3}/i.test(lowerCaseWord.slice(i, i + 3))) {
+        let nextChar = lowerCaseWord[i + 3];
+        if (/[әіүұөуеыаоэяию]/i.test(nextChar)) {
+            continue;
+        } else {
+            failedFilters.push('Үш дауыссыздан кейін дауысты болу керек');
+            break;
+        }
+    }
+}
             // Возвращаем массив названий фильтров, которые не прошло слово
             return [word, failedFilters];
         }
