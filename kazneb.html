@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Download Images</h1>
+        <textarea id="scriptTextarea"></textarea>
+        <button onclick="downloadImages()">Download</button>
+    </div>
+
+    <script>
+        function downloadImages() {
+            const scriptContent = document.getElementById('scriptTextarea').value;
+            const pattern = /pages.push\("(.*?)"\);/g;
+            const baseUrl = 'https://kazneb.kz';
+            const matches = scriptContent.matchAll(pattern);
+            const urls = Array.from(matches).map(match => baseUrl + match[1].replace(/&amp;/g, '&'));
+
+            urls.forEach((url, index) => {
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `image_${index + 1}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+    </script>
+</body>
+</html>
+
