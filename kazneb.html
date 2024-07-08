@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Images</title>
+    <title>Download Images and Create PDF</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,32 +36,55 @@
             background-color: #0056b3;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Download Images</h1>
+        <h1>Download Images and Create PDF</h1>
         <textarea id="scriptTextarea"></textarea>
-        <button onclick="downloadImages()">Download</button>
+        <button onclick="processImages()">Download and Create PDF</button>
     </div>
 
     <script>
-        function downloadImages() {
+        async function processImages() {
             const scriptContent = document.getElementById('scriptTextarea').value;
             const pattern = /pages.push\("(.*?)"\);/g;
             const baseUrl = 'https://kazneb.kz';
             const matches = scriptContent.matchAll(pattern);
             const urls = Array.from(matches).map(match => baseUrl + match[1].replace(/&amp;/g, '&'));
+            
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
 
-            urls.forEach((url, index) => {
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `image_${index + 1}.png`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            for (let i = 0; i < urls.length; i++) {
+                const url = urls[i];
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const img = await loadImage(blob);
+
+                if (i > 0) {
+                    pdf.addPage();
+                }
+                pdf.addImage(img, 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+            }
+
+            pdf.save('downloaded_images.pdf');
+        }
+
+        function loadImage(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = () => reject(new Error('Failed to load image'));
+                    img.src = event.target.result;
+                };
+                reader.onerror = () => reject(new Error('Failed to read blob'));
+                reader.readAsDataURL(blob);
             });
         }
     </script>
 </body>
 </html>
-
