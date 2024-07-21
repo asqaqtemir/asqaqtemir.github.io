@@ -3,67 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Images</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            margin: 0;
-        }
-        .container {
-            text-align: center;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        textarea {
-            width: 100%;
-            height: 200px;
-        }
-        button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <title>Image Downloader</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Download Images</h1>
-        <textarea id="scriptTextarea"></textarea>
-        <button onclick="downloadImages()">Download</button>
-    </div>
+    <h1>Image Downloader</h1>
+    <form id="scriptForm">
+        <textarea id="scriptInput" rows="10" cols="50" placeholder="Insert your JavaScript script here..."></textarea><br>
+        <button type="button" onclick="downloadImages()">Download Images</button>
+    </form>
 
     <script>
-        async function downloadImages() {
-            const scriptContent = document.getElementById('scriptTextarea').value;
-            const pattern = /pages.push\("(.*?)"\);/g;
-            const baseUrl = 'https://kazneb.kz';
-            const matches = scriptContent.matchAll(pattern);
-            const urls = Array.from(matches).map(match => baseUrl + match[1].replace(/&amp;/g, '&'));
-
-            for (let i = 0; i < urls.length; i++) {
-                const url = urls[i];
-                const response = await fetch(url);
-                const blob = await response.blob();
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `image_${i + 1}.png`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
-            }
+        function downloadImages() {
+            const scriptInput = document.getElementById('scriptInput').value;
+            const pattern = /(?<=pages.push\(")(.*?\.png\?.*?")/g;
+            const urls = [...scriptInput.matchAll(pattern)].map(match => match[0].replace('&amp;', '&').slice(0, -1));
+            const baseUrl = 'https://kazneb.kz'; // Измените на нужный URL
+            const fullUrls = urls.map(url => baseUrl + url);
+            
+            fullUrls.forEach((url, index) => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `image_${(index + 1).toString().padStart(4, '0')}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
         }
     </script>
 </body>
