@@ -11,6 +11,7 @@
         <textarea id="scriptInput" rows="10" cols="50" placeholder="Insert your JavaScript script here..."></textarea><br>
         <button type="button" onclick="downloadImages()">Download Images</button>
     </form>
+    <div id="progress" style="margin-top: 20px;"></div>
 
     <script>
         async function downloadImages() {
@@ -19,6 +20,9 @@
             const urls = [...scriptInput.matchAll(pattern)].map(match => match[0].replace('&amp;', '&').slice(0, -1));
             const baseUrl = 'https://kazneb.kz'; // Измените на нужный URL
             const fullUrls = urls.map(url => baseUrl + url);
+            
+            const progress = document.getElementById('progress');
+            progress.innerHTML = `Starting download of ${fullUrls.length} images...`;
 
             for (let i = 0; i < fullUrls.length; i++) {
                 const url = fullUrls[i];
@@ -27,22 +31,26 @@
                     if (response.ok) {
                         const blob = await response.blob();
                         const a = document.createElement('a');
-                        const url = window.URL.createObjectURL(blob);
-                        a.href = url;
+                        const blobUrl = window.URL.createObjectURL(blob);
+                        a.href = blobUrl;
                         a.download = `image_${(i + 1).toString().padStart(4, '0')}.png`;
                         document.body.appendChild(a);
                         a.click();
-                        window.URL.revokeObjectURL(url);
+                        window.URL.revokeObjectURL(blobUrl);
                         document.body.removeChild(a);
-                        console.log(`Downloaded ${url}`);
+                        progress.innerHTML = `Downloaded ${i + 1} of ${fullUrls.length} images.`;
                     } else {
                         console.error(`Failed to fetch ${url}: ${response.statusText}`);
+                        progress.innerHTML = `Error downloading image ${i + 1}: ${response.statusText}`;
                     }
                 } catch (error) {
                     console.error(`Error fetching ${url}: ${error}`);
+                    progress.innerHTML = `Error downloading image ${i + 1}: ${error}`;
                 }
                 await new Promise(resolve => setTimeout(resolve, 500)); // 500 ms delay between requests
             }
+
+            progress.innerHTML = `Completed downloading ${fullUrls.length} images.`;
         }
     </script>
 </body>
