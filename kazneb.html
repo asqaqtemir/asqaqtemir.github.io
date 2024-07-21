@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Downloader</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 </head>
 <body>
     <h1>Image Downloader</h1>
@@ -13,20 +15,27 @@
     </form>
 
     <script>
-        function downloadImages() {
+        async function downloadImages() {
             const scriptInput = document.getElementById('scriptInput').value;
             const pattern = /(?<=pages.push\(")(.*?\.png\?.*?")/g;
             const urls = [...scriptInput.matchAll(pattern)].map(match => match[0].replace('&amp;', '&').slice(0, -1));
             const baseUrl = 'https://kazneb.kz'; // Измените на нужный URL
             const fullUrls = urls.map(url => baseUrl + url);
-            
-            fullUrls.forEach((url, index) => {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `image_${(index + 1).toString().padStart(4, '0')}.png`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+
+            const zip = new JSZip();
+            const imgFolder = zip.folder("images");
+
+            // Скачиваем каждое изображение и добавляем его в архив
+            for (let i = 0; i < fullUrls.length; i++) {
+                const url = fullUrls[i];
+                const response = await fetch(url);
+                const blob = await response.blob();
+                imgFolder.file(`image_${(i + 1).toString().padStart(4, '0')}.png`, blob);
+            }
+
+            // Генерируем архив и запускаем его скачивание
+            zip.generateAsync({ type: "blob" }).then(function(content) {
+                saveAs(content, "images.zip");
             });
         }
     </script>
