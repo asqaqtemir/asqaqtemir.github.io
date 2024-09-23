@@ -1,58 +1,268 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Downloader</title>
+    <title>Kazneb Image Downloader</title>
+    <style>
+        .button-clear {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .button-copy {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .button-display {
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .button-download-all {
+            background-color: purple;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .image-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .image-item img {
+            width: 300px;
+            margin-right: 10px;
+        }
+        .button-download {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Image Downloader</h1>
-    <form id="scriptForm">
-        <textarea id="scriptInput" rows="10" cols="50" placeholder="Insert your JavaScript script here..."></textarea><br>
-        <button type="button" onclick="downloadImages()">Download Images</button>
-    </form>
-    <div id="progress" style="margin-top: 20px;"></div>
+    <h1>Kazneb Image Downloader</h1>
+    
+    <div>
+        <h2>Step 1: Extract Script</h2>
+        <input type="text" id="urlInput" placeholder="Введите URL" value="https://kazneb.kz/kk/catalogue/view/92975" style="width: 300px;">
+        <button onclick="extractScript()" class="button-display">Extract Script</button>
+        <button onclick="copyScript()" class="button-copy">Copy Script</button>
+        <button onclick="clearScript()" class="button-clear">Clear Script</button>
+        <div id="status"></div>
+        <textarea id="scriptOutput" rows="10" cols="100" readonly></textarea>
+    </div>
+    
+    <div>
+        <h2>Step 2: Display and Download Images</h2>
+        <textarea id="scriptInput" rows="10" cols="100" placeholder="Вставьте сюда скрипт"></textarea>
+        <button onclick="displayImages()" class="button-display">Display Images</button>
+        <button onclick="clearImages()" class="button-clear">Clear Images</button>
+        <button onclick="downloadAllImages()" class="button-download-all">Download All Images</button>
+        <div id="imageStatus"></div>
+        <div id="images" class="image-container"></div>
+    </div>
 
     <script>
-        async function downloadImages() {
-            const scriptInput = document.getElementById('scriptInput').value;
-            const pattern = /(?<=pages.push\(")(.*?\.png\?.*?")/g;
-            const urls = [...scriptInput.matchAll(pattern)].map(match => match[0].replace('&amp;', '&').slice(0, -1));
-            const baseUrl = 'https://kazneb.kz'; // Измените на нужный URL
-            const corsProxy = 'https://api.allorigins.win/raw?url='; // Другой публичный прокси-сервер
-            const fullUrls = urls.map(url => corsProxy + encodeURIComponent(new URL(url, baseUrl).href));
+        async function extractScript() {
+            let url = document.getElementById('urlInput').value;
 
-            const progress = document.getElementById('progress');
-            progress.innerHTML = `Starting download of ${fullUrls.length} images...`;
-
-            for (let i = 0; i < fullUrls.length; i++) {
-                const url = fullUrls[i];
-                try {
-                    const response = await fetch(url);
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        const a = document.createElement('a');
-                        const blobUrl = window.URL.createObjectURL(blob);
-                        a.href = blobUrl;
-                        a.download = `image_${(i + 1).toString().padStart(4, '0')}.png`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(blobUrl);
-                        document.body.removeChild(a);
-                        progress.innerHTML = `Downloaded ${i + 1} of ${fullUrls.length} images.`;
-                    } else {
-                        console.error(`Failed to fetch ${url}: ${response.statusText}`);
-                        progress.innerHTML = `Error downloading image ${i + 1} of ${fullUrls.length}: ${response.statusText}`;
-                    }
-                } catch (error) {
-                    console.error(`Error fetching ${url}: ${error}`);
-                    progress.innerHTML = `Error downloading image ${i + 1} of ${fullUrls.length}: ${error}`;
-                }
-                await new Promise(resolve => setTimeout(resolve, 10)); // 500 ms delay between requests
+            const match = url.match(/\/view\/(\d+)/);
+            if (match) {
+                const brId = match[1];
+                url = `https://kazneb.kz/kk/bookView/view?brId=${brId}&simple=true`;
             }
 
-            progress.innerHTML = `Completed downloading ${fullUrls.length} images.`;
+            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+            document.getElementById('status').textContent = 'Processing URL: ' + url;
+
+            try {
+                const response = await fetch(proxyUrl);
+
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                const data = await response.json();
+                const text = data.contents;
+                document.getElementById('status').textContent = 'Fetched data';
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const scripts = doc.querySelectorAll('script');
+                
+                let scriptContent = '';
+                scripts.forEach(script => {
+                    if (script.textContent.includes('var pages = [];')) {
+                        scriptContent = script.textContent;
+                    }
+                });
+
+                if (!scriptContent) {
+                    document.getElementById('status').textContent = "No script found.";
+                    return;
+                }
+
+                document.getElementById('scriptOutput').textContent = scriptContent;
+                document.getElementById('status').textContent = 'Script extracted successfully';
+            } catch (error) {
+                document.getElementById('status').textContent = 'An error occurred: ' + error.message;
+            }
+        }
+
+        function copyScript() {
+            const scriptOutput = document.getElementById('scriptOutput');
+            scriptOutput.select();
+            document.execCommand('copy');
+        }
+
+        function clearScript() {
+            document.getElementById('scriptOutput').value = '';
+            document.getElementById('status').textContent = '';
+        }
+
+        function displayImages() {
+            const scriptContent = document.getElementById('scriptInput').value;
+            if (!scriptContent) {
+                document.getElementById('imageStatus').textContent = "No script provided.";
+                return;
+            }
+
+            const imageUrls = scriptContent.match(/\/FileStore\/dataFiles\/[^\s'"]+/g).map(url => url.replace(/&amp;/g, '&'));
+
+            if (!imageUrls || imageUrls.length === 0) {
+                document.getElementById('imageStatus').textContent = "No images found.";
+                return;
+            }
+
+            const imagesContainer = document.getElementById('images');
+            imagesContainer.innerHTML = '';
+
+            imageUrls.forEach((imageUrl, index) => {
+                const fullUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://kazneb.kz' + imageUrl);
+                const imageItem = document.createElement('div');
+                imageItem.classList.add('image-item');
+                const img = document.createElement('img');
+                img.dataset.src = fullUrl; // Use data-src for lazy loading
+                img.alt = 'Image ' + (index + 1);
+                img.classList.add('lazy'); // Add lazy class for styling or JavaScript hooks
+                imageItem.appendChild(img);
+
+                const downloadButton = document.createElement('button');
+                downloadButton.textContent = 'Download';
+                downloadButton.classList.add('button-download');
+                downloadButton.onclick = () => downloadImage(fullUrl, `image_${index + 1}.png`);
+                imageItem.appendChild(downloadButton);
+
+                imagesContainer.appendChild(imageItem);
+            });
+
+            lazyLoadImages();
+            document.getElementById('imageStatus').textContent = 'Images displayed successfully';
+        }
+
+        function lazyLoadImages() {
+            const lazyImages = document.querySelectorAll('img.lazy');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            lazyImages.forEach(image => {
+                imageObserver.observe(image);
+            });
+        }
+
+        async function downloadImage(url, filename) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                const blob = await response.blob();
+                const a = document.createElement('a');
+                const objectURL = URL.createObjectURL(blob);
+                a.href = objectURL;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(objectURL);
+            } catch (error) {
+                console.error('An error occurred while downloading the image:', error);
+            }
+        }
+
+        async function downloadAllImages() {
+            const scriptContent = document.getElementById('scriptInput').value;
+            if (!scriptContent) {
+                document.getElementById('imageStatus').textContent = "No script provided.";
+                return;
+            }
+
+            const imageUrls = scriptContent.match(/\/FileStore\/dataFiles\/[^\s'"]+/g).map(url => url.replace(/&amp;/g, '&'));
+            if (!imageUrls || imageUrls.length === 0) {
+                document.getElementById('imageStatus').textContent = "No images found.";
+                return;
+            }
+
+            const zip = new JSZip();
+            const folder = zip.folder("kazneb_images");
+
+            const promises = imageUrls.map((imageUrl, index) => {
+                const fullUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://kazneb.kz' + imageUrl);
+                return fetch(fullUrl)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        folder.file(`image_${index + 1}.png`, blob);
+                    })
+                    .catch(error => console.error('Error downloading image:', error));
+            });
+
+            try {
+                await Promise.all(promises);
+                const content = await zip.generateAsync({ type: "blob" });
+                const a = document.createElement('a');
+                const objectURL = URL.createObjectURL(content);
+                a.href = objectURL;
+                a.download = 'kazneb_images.zip';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(objectURL);
+            } catch (error) {
+                console.error('Error creating ZIP file:', error);
+            }
+        }
+
+        function clearImages() {
+            document.getElementById('scriptInput').value = '';
+            document.getElementById('imageStatus').textContent = '';
+            document.getElementById('images').innerHTML = '';
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip-utils/0.0.2/jszip-utils.min.js"></script>
 </body>
 </html>
