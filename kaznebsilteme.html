@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kazneb Book Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            width: 150px; /* Барлық батырмалар бір көлемде */
+        }
+        .button-clear {
+            background-color: red;
+            color: white;
+        }
+        .button-copy {
+            background-color: green;
+            color: white;
+        }
+        .button-display {
+            background-color: blue;
+            color: white;
+        }
+        .button-download-all {
+            background-color: purple;
+            color: white;
+        }
+        .button-download {
+            background-color: orange;
+            color: white;
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+        #scriptOutput, #urlOutput {
+            width: 100%;
+            height: 200px;
+            margin-top: 10px;
+            resize: vertical;
+        }
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #ff0000; /* Қызыл түс қате хабарлар үшін */
+        }
+    </style>
+</head>
+<body>
+    <h1>Kazneb Book Downloader </h1>
+    
+    <div>
+        <h2>1-қадам: Скриптті шығару</h2>
+        <input type="text" id="urlInput" placeholder="URL енгізіңіз" value="https://kazneb.kz/kk/catalogue/view/1554745" style="width: 300px;">
+        <button onclick="extractScript()" class="button button-display">Скриптті шығару</button>
+        <button onclick="copyScript()" class="button button-copy">Скриптті көшіру</button>
+        <button onclick="clearScript()" class="button button-clear">Скриптті тазарту</button>
+        <div id="status"></div>
+        <textarea id="scriptOutput" rows="10" readonly placeholder="Скрипттің нәтижесі осында пайда болады..."></textarea>
+        <button onclick="generateLinks()" class="button button-download-all">Сілтемелер жасау</button>
+    </div>
+
+    <div>
+        <h2>2-қадам: Жасалған сілтемелер</h2>
+        <textarea id="urlOutput" rows="10" readonly placeholder="Жасалған URL-мекендер осында шығады..."></textarea>
+        <button onclick="copyLinks()" class="button button-copy">Сілтемелерді көшіру</button>
+        <button onclick="clearLinks()" class="button button-clear">Сілтемелерді тазарту</button>
+    </div>
+
+    <script>
+        async function extractScript() {
+            let url = document.getElementById('urlInput').value;
+
+            const match = url.match(/\/view\/(\d+)/);
+            if (match) {
+                const brId = match[1];
+                url = `https://kazneb.kz/kk/bookView/view?brId=${brId}&simple=true`;
+            }
+
+            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+            document.getElementById('status').textContent = 'URL өңделуде: ' + url;
+
+            try {
+                const response = await fetch(proxyUrl);
+
+                if (!response.ok) {
+                    throw new Error('HTTP қатесі! Статус: ' + response.status);
+                }
+                const data = await response.json();
+                const text = data.contents;
+                document.getElementById('status').textContent = 'Деректер алынды';
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                const scripts = doc.querySelectorAll('script');
+                
+                let scriptContent = '';
+                scripts.forEach(script => {
+                    if (script.textContent.includes('var pages = [];')) {
+                        scriptContent = script.textContent;
+                    }
+                });
+
+                if (!scriptContent) {
+                    document.getElementById('status').textContent = "Скрипт табылған жоқ.";
+                    return;
+                }
+
+                document.getElementById('scriptOutput').textContent = scriptContent;
+                document.getElementById('status').textContent = 'Скрипт сәтті шығарылды';
+            } catch (error) {
+                document.getElementById('status').textContent = 'Қате орын алды: ' + error.message;
+            }
+        }
+
+        function copyScript() {
+            const scriptOutput = document.getElementById('scriptOutput');
+            scriptOutput.select();
+            document.execCommand('copy');
+        }
+
+        function clearScript() {
+            document.getElementById('scriptOutput').value = '';
+            document.getElementById('urlOutput').value = '';
+            document.getElementById('status').textContent = '';
+        }
+
+        function generateLinks() {
+            const scriptText = document.getElementById('scriptOutput').value;
+            const regex = /pages\.push\("([^"]+?)"\);/g;
+            let links = [];
+            let match;
+            while ((match = regex.exec(scriptText)) !== null) {
+                links.push('https://kazneb.kz' + match[1].replace(/&amp;/g, '&'));
+            }
+            document.getElementById('urlOutput').value = links.join('\n');
+        }
+
+        function copyLinks() {
+            const urlOutput = document.getElementById('urlOutput');
+            urlOutput.select();
+            document.execCommand('copy');
+        }
+
+        function clearLinks() {
+            document.getElementById('urlOutput').value = '';
+        }
+    </script>
+</body>
+</html>
