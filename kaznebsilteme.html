@@ -19,7 +19,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
             margin-right: 10px;
-            width: 150px; /* Барлық батырмалар бір көлемде */
+            width: 150px; /* Батырмалар бірдей көлемде */
         }
         .button-clear {
             background-color: red;
@@ -58,7 +58,7 @@
     </style>
 </head>
 <body>
-    <h1>Kazneb Book Downloader </h1>
+    <h1>Kazneb Book Downloader</h1>
     
     <div>
         <h2>1-қадам: Скриптті шығару</h2>
@@ -67,13 +67,13 @@
         <button onclick="copyScript()" class="button button-copy">Скриптті көшіру</button>
         <button onclick="clearScript()" class="button button-clear">Скриптті тазарту</button>
         <div id="status"></div>
-        <textarea id="scriptOutput" rows="10" readonly placeholder="Скрипттің нәтижесі осында пайда болады..."></textarea>
+        <textarea id="scriptOutput" rows="10" readonly placeholder="Скрипт нәтижесі осында пайда болады..."></textarea>
         <button onclick="generateLinks()" class="button button-download-all">Сілтемелер жасау</button>
     </div>
 
     <div>
-        <h2>2-қадам: Жасалған сілтемелер</h2>
-        <textarea id="urlOutput" rows="10" readonly placeholder="Жасалған URL-мекендер осында шығады..."></textarea>
+        <h2>Жасалған сілтемелер</h2>
+        <textarea id="urlOutput" rows="10" readonly placeholder="URL-мекендер осында пайда болады..."></textarea>
         <button onclick="copyLinks()" class="button button-copy">Сілтемелерді көшіру</button>
         <button onclick="clearLinks()" class="button button-clear">Сілтемелерді тазарту</button>
     </div>
@@ -117,10 +117,10 @@
                     return;
                 }
 
-                document.getElementById('scriptOutput').textContent = scriptContent;
+                document.getElementById('scriptOutput').value = scriptContent; // Изменено на value
                 document.getElementById('status').textContent = 'Скрипт сәтті шығарылды';
             } catch (error) {
-                document.getElementById('status').textContent = 'Қате орын алды: ' + error.message;
+                document.getElementById('status').textContent = 'Қате шықты: ' + error.message;
             }
         }
 
@@ -132,7 +132,7 @@
 
         function clearScript() {
             document.getElementById('scriptOutput').value = '';
-            document.getElementById('urlOutput').value = '';
+            document.getElementById('urlOutput').value = ''; // Сілтеме нәтижесін тазарту
             document.getElementById('status').textContent = '';
         }
 
@@ -145,6 +145,11 @@
                 links.push('https://kazneb.kz' + match[1].replace(/&amp;/g, '&'));
             }
             document.getElementById('urlOutput').value = links.join('\n');
+            if (links.length === 0) {
+                document.getElementById('status').textContent = 'Сілтемелер табылмады.';
+            } else {
+                document.getElementById('status').textContent = 'Сілтемелер сәтті жасалды.';
+            }
         }
 
         function copyLinks() {
