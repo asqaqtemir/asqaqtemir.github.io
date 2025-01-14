@@ -19,7 +19,7 @@ const rules = [
     { pattern: /^орфо/, replacement: "дұрыс" },
     { pattern: /^пере/, replacement: "қайта" },
     { pattern: /^поли/, replacement: "көп" },
-    { pattern: /^порно$/, replacement: "бүлік" },
+    { pattern: /^порно/, replacement: "бүлік" },
     { pattern: /^само/, replacement: "өз" },
     { pattern: /^термо/, replacement: "жылы" },
     { pattern: /^теле/, replacement: "алыс" },
