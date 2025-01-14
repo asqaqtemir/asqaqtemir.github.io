@@ -33,6 +33,11 @@ const rules = [
     { pattern: /ение$/, replacement: "у" },
     { pattern: /лог$/, replacement: "танушы" },
     { pattern: /логия$/, replacement: "тану" },
+    { pattern: /метрия$/, replacement: "өлшем" },
+    { pattern: /сфера$/, replacement: "шеңбер" },
+
+
+    
     { pattern: /ость$/, replacement: "лық" },
     { pattern: /порно$/, replacement: "бүлік" },
     { pattern: /ство$/, replacement: "шылық" }
