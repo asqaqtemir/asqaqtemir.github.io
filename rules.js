@@ -11,7 +11,7 @@ const rules = [
     { pattern: /^ихтио/, replacement: "балық" },
     { pattern: /^калли/, replacement: "сұлу" },
     { pattern: /^ксило/, replacement: "ағаш" },
-        { pattern: /^литос/, replacement: "тас" },
+    { pattern: /^литос/, replacement: "тас" },
     { pattern: /^макро/, replacement: "ұлы" },
     { pattern: /^микро/, replacement: "кіші" },
     { pattern: /^моно/, replacement: "бір" },
@@ -19,6 +19,7 @@ const rules = [
     { pattern: /^орфо/, replacement: "дұрыс" },
     { pattern: /^пере/, replacement: "қайта" },
     { pattern: /^поли/, replacement: "көп" },
+    { pattern: /^порно/, replacement: "бүлік" },
     { pattern: /^само/, replacement: "өз" },
     { pattern: /^термо/, replacement: "жылы" },
     { pattern: /^теле/, replacement: "алыс" },
@@ -42,7 +43,6 @@ const rules = [
 
     
     { pattern: /ость$/, replacement: "лық" },
-    { pattern: /порно$/, replacement: "бүлік" },
     { pattern: /ство$/, replacement: "шылық" }
 
 
