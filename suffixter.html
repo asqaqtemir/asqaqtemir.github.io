@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="kk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Конвертер приставок и суффиксов</title>
+    <title>Жұрнақтар мен жалғаулар түрлендіргіші</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,6 +40,7 @@
             padding: 10px 15px;
             border-radius: 4px;
             cursor: pointer;
+            margin-right: 10px;
         }
 
         button:hover {
@@ -58,14 +59,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Конвертер приставок и суффиксов</h1>
-        <textarea id="inputText" placeholder="Введите русское слово..."></textarea>
-        <button onclick="convertWord()">Конвертировать</button>
+        <h1>Жұрнақтар мен жалғаулар түрлендіргіші</h1>
+        <textarea id="inputText" placeholder="Орыс тіліндегі сөзді енгізіңіз..."></textarea>
+        <button onclick="convertWord()">Түрлендіру</button>
+        <button onclick="clearFields()">Өшір</button>
         <div id="output" class="output"></div>
     </div>
 
     <script>
-        // Правила преобразования
+        // Түрлендіру ережелері
         const rules = [
             { pattern: /^само/, replacement: "өз" },
             { pattern: /ость$/, replacement: "лық" },
@@ -86,7 +88,12 @@
                 }
             }
 
-            document.getElementById("output").innerText = result || "Введите слово для преобразования.";
+            document.getElementById("output").innerText = result || "Түрлендіру үшін сөзді енгізіңіз.";
+        }
+
+        function clearFields() {
+            document.getElementById("inputText").value = "";
+            document.getElementById("output").innerText = "";
         }
     </script>
 </body>
