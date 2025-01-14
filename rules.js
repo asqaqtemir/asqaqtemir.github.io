@@ -11,7 +11,7 @@ const rules = [
     { pattern: /^ихтио/, replacement: "балық" },
     { pattern: /^калли/, replacement: "сұлу" },
     { pattern: /^ксило/, replacement: "ағаш" },
-    { pattern: /^литос/, replacement: "тас" },
+    { pattern: /^лито/, replacement: "тас" },
     { pattern: /^макро/, replacement: "ұлы" },
     { pattern: /^микро/, replacement: "кіші" },
     { pattern: /^моно/, replacement: "бір" },
