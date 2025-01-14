@@ -1,6 +1,8 @@
 // Түрлендіру ережелері
 const rules = [
     { pattern: /^авто/, replacement: "өз" },
+    { pattern: /^атмос/, replacement: "бу" },
+    
     { pattern: /^аэро/, replacement: "ауа" },
     { pattern: /^био/, replacement: "өмір" },
     { pattern: /^гидро/, replacement: "су" },
@@ -9,6 +11,7 @@ const rules = [
     { pattern: /^ихтио/, replacement: "балық" },
     { pattern: /^калли/, replacement: "сұлу" },
     { pattern: /^ксило/, replacement: "ағаш" },
+        { pattern: /^литос/, replacement: "тас" },
     { pattern: /^макро/, replacement: "ұлы" },
     { pattern: /^микро/, replacement: "кіші" },
     { pattern: /^моно/, replacement: "бір" },
