@@ -62,22 +62,12 @@
         <h1>Жұрнақтар мен жалғаулар түрлендіргіші</h1>
         <textarea id="inputText" placeholder="Орыс тіліндегі сөзді енгізіңіз..."></textarea>
         <button onclick="convertWord()">Түрлендіру</button>
-        <button onclick="clearFields()">Өшір</button>
+        <button onclick="clearFields()">Тазалау</button>
         <div id="output" class="output"></div>
     </div>
 
+    <script src="rules.js"></script>
     <script>
-        // Түрлендіру ережелері
-        const rules = [
-            { pattern: /^само/, replacement: "өз" },
-            { pattern: /ость$/, replacement: "лық" },
-            { pattern: /ение$/, replacement: "у" },
-            { pattern: /ство$/, replacement: "шылық" },
-            { pattern: /^пере/, replacement: "қайта" },
-            { pattern: /^под/, replacement: "асты" },
-            { pattern: /^над/, replacement: "үсті" }
-        ];
-
         function convertWord() {
             const inputText = document.getElementById("inputText").value.trim();
             let result = inputText;
