@@ -1,16 +1,21 @@
 // Түрлендіру ережелері
 const rules = [
     { pattern: /^авто/, replacement: "өз" },
+     { pattern: /^анти, replacement: "қарсы" },
     { pattern: /^атмос/, replacement: "бу" },
     
     { pattern: /^аэро/, replacement: "ауа" },
     { pattern: /^био/, replacement: "өмір" },
     { pattern: /^гидро/, replacement: "су" },
+    { pattern: /^гипер/, replacement: "аса" },
+    { pattern: /^гипо/, replacement: "төмен" },
     { pattern: /^гео/, replacement: "жер" },
     { pattern: /^изо/, replacement: "тең" },
+    { pattern: /^интер/, replacement: "ара" },
     { pattern: /^ихтио/, replacement: "балық" },
     { pattern: /^калли/, replacement: "сұлу" },
     { pattern: /^ксило/, replacement: "ағаш" },
+    { pattern: /^контр/, replacement: "қарсы" },
     { pattern: /^лито/, replacement: "тас" },
     { pattern: /^макро/, replacement: "ұлы" },
     { pattern: /^микро/, replacement: "кіші" },
