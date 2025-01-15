@@ -1,7 +1,7 @@
 // Түрлендіру ережелері
 const rules = [
     { pattern: /^авто/, replacement: "өз" },
-     { pattern: /^анти, replacement: "қарсы" },
+    { pattern: /^анти, replacement: "қарсы" },
     { pattern: /^атмос/, replacement: "бу" },
     
     { pattern: /^аэро/, replacement: "ауа" },
