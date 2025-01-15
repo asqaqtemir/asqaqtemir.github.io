@@ -59,7 +59,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Сөзсоңы мен Сөзалды қосымшаларын түрлендіргішыы</h1>
+        <h1>Сөзсоңы мен Сөзалды қосымшаларын түрлендіргішЖ</h1>
         <textarea id="inputText" placeholder="Орысша сөз жаз..."></textarea>
         <button onclick="convertWord()">Түрлендіру</button>
         <button onclick="clearFields()">Өшіру</button>
@@ -69,7 +69,8 @@
     <script src="rules.js"></script>
     <script>
         function convertWord() {
-            const inputText = document.getElementById("inputText").value.trim();
+            const inputText = document.getElementById("inputText").value.trim().toLowerCase();
+
             let result = inputText;
 
             for (const rule of rules) {
