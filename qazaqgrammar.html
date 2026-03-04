@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qazaq Grammar Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Qazaq Grammar Könverter</h2>
+
+  <label for="kazakhText">Qazaqca söz jaz:</label>
+  <textarea id="kazakhText"></textarea>
+
+  <button onclick="transliterate()">Säykestew</button>
+  <button onclick="copyText()">Köciriw</button>	
+  <button onclick="deleteText()">Öciriw</button>
+  
+<br>
+  <label for="latinText">Latındalğan nätiyje:</label>
+  <textarea id="latinText" readonly></textarea>
+
+  <script>
+    const ALPHABET = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T','U','V','W','Y','Z','Ä','İ','Ñ','Ö','Ü'];
+    const VOWEL = ['A', 'Ä', 'Ö', 'O', 'Ü', 'U', 'E', 'I', 'İ'];
+    const SOFT = ['Ä', 'Ö', 'Ü', 'İ', 'E'];
+    const FIRM = ['A', 'O', 'U', 'I'];
+    const CONSONANTS = ['B', 'V', 'G', 'D', 'J', 'Z', 'Y', 'L', 'R', 'U', 'M', 'N', 'Ñ', 'K', 'H', 'P', 'F', 'S', 'T', 'C'];
+    const SHY = ['B', 'V', 'G', 'D', 'J', 'Z'];
+    const HINDI = ['Y', 'L', 'R', 'U', 'M', 'N', 'Ñ'];
+    const SEVERE = ['K', 'H', 'P', 'F', 'S', 'T', 'C'];
+
+    function transliterate() {
+      const kazakhText = document.getElementById('kazakhText').value;
+      const latinText = converter(kazakhText, kazgrammerAlphabet);
+      document.getElementById('latinText').value = latinText;
+    }
+
+    function deleteText() {
+      document.getElementById('kazakhText').value = '';
+      document.getElementById('latinText').value = '';
+    }
+
+    function copyText() {
+      const latinText = document.getElementById('latinText');
+      latinText.select();
+      document.execCommand('copy');
+    }
+
+    function converter(str, alphabet) {
+      const { characters, exceptions = [] } = alphabet;
+      if (typeof str === 'string') {
+
+        let latin = str;
+
+        latin = latin.replace(/\S+/ig, word => {
+          let w = word;
+          const keys = Object.keys(exceptions);
+          for (let i = 0, ii = keys.length; i < ii; i++) {
+            w = w.replace(new RegExp(keys[i], 'ig'), exceptions[keys[i]]);
+          }
+          return w;
+        });
+
+        latin = latin.replace(/[А-Яа-яӘәІіҢңҒғҮүҰұҚқӨөҺһ]/gi, (l) => {
+          return characters[l] ? characters[l] : l;
+        });
+
+        return latin;
+      }
+    }
+
+
+	// Пример использования
+	const kazgrammerAlphabet = {
+  "name":"kazgrammer",
+  "characters": {
+	"А": "A",
+	"Ә": "Ä",
+	"Б": "B",
+	"Д": "D",
+	"Е": "E",
+	"Ф": "F",
+	"Г": "G",
+	"Ғ": "Ğ",
+	"Һ": "H",
+	"Х": "H",
+	"І": "İ",
+	"И": "İy",
+	"Й": "Ү",
+	"Ж": "J",
+	"К": "K",
+	"Л": "L",
+	"М": "M",
+	"Н": "N",
+	"Ң": "Ñ",
+	"О": "O",
+	"Ө": "Ö",
+	"П": "P",
+	"Қ": "Q",
+	"Р": "R",
+	"С": "S",
+	"Ш": "C",
+	"Ч": "C",
+	"Т": "T",
+	"Ұ": "U",
+	"Ү": "Ü",
+	"В": "V",
+	"Ы": "I",
+	"У": "Iw",
+	"З": "Z",
+	"а": "a",
+	"ә": "ä",
+	"б": "b",
+	"д": "d",
+	"е": "e",
+	"ф": "f",
+	"г": "g",
+	"ғ": "ğ",
+	"һ": "h",
+	"х": "h",
+	"і": "i",
+	"и": "iy",
+	"й": "y",
+	"ж": "j",
+	"к": "k",
+	"л": "l",
+	"м": "m",
+	"н": "n",
+	"ң": "ñ",
+	"о": "o",
+	"ө": "ö",
+	"п": "p",
+	"қ": "q",
+	"р": "r",
+	"с": "s",
+	"ш": "c",
+	"ч": "c",
+	"т": "t",
+	"ұ": "u",
+	"ү": "ü",
+	"в": "v",
+	"ы": "ı",
+	"у": "ıw",
+	"з": "z",
+	"Я": "Ya",
+	"я":"ya",
+	"Ю": "Yw",
+	"ю":"yw",
+	"Э":"E",
+	"э":"e",
+	"Щ":"C",
+	"щ":"c",
+	"Ч":"C",
+	"ч":"с",
+	"Ц":"S",
+	"ц":"s",
+	"Ь":"",
+	"ь":"",
+	"Ъ":"",
+	"ъ":""
+  },
+  "exceptions": {
+	"у(?=.*[вэфцчщ])":"u",
+	"([вэфцчщ].*)у": "$1u",
+	"([аәоеыіоөұү])у":"$1w",
+	"^([^аәоеыіоөұуү])?у": "$1uw",
+	"([әеиөүік]+[^аәоеыіоөұү]*?)у":"$1iw",
+	"и(?=.*[вэхфцчщ])":"i",
+	"и(?=.*[я])":"ı",
+	"([вэхфцчщ].*)и": "$1i",
+	"([аоуұық]+[^аәоеыіоөұуү]*?)и":"$1ıy",
+	"и(?=([^аәоеыіоөұуү]*?[аоуұы]))":"ıy",
+    
+    "([қ]+[^аәоеыіоөұуү]*?)ю":"$1ıw",
+
+     "([и]+[ю])":"iyiw",
+      "([а]+[ю])" :"ayıw",
+      "([о]+[ю])":"oyıw",
+      "([ы]+[ю])":"ıyıw",
+      "(і]+[ю])":"iyiw",
+      "([е]+[ю])":"eyiw",
+      "([ұ]+[ю])":"uyıw",
+      "([ү]+[ю])":"üyiw",
+
+      "([я]+[у])":"yaw",
+
+     "([қ]+[а]+[й]+[т]+[у]+[ы])":"qaytıwı",
+      "([қ]+[а]+[й]+[т]+[у]+[і])":"qaytiwi",
+
+      "([а]+[щ]+[ы])":"accı",
+       "([т]+[ұ]+[щ]+[ы])":"tuccı",
+  }
+};
+	
+  </script>
+
+
+</body>
+</html>
