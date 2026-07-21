@@ -1,1 +1,1 @@
-# https://asqaqtemir.github.io/qazaqgrammar.html
+https://asqaqtemir.github.io/qazaqgrammar.html
